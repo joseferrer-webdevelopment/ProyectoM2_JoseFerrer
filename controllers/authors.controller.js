@@ -46,4 +46,20 @@ async function updateAuthor(req, res) {
   }
 }
 
-module.exports = { getAllAuthors, getAuthorById, createAuthor, updateAuthor };
+async function deleteAuthorById(req, res) {
+  try {
+    const { id } = req.params;
+    const author = await authorsService.deleteAuthorById(id);
+
+    if (!author) {
+      return res.status(404).json({ error: 'Author no encontrado' });
+    }
+
+    res.json(author);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+module.exports = { getAllAuthors, getAuthorById, createAuthor, updateAuthor, deleteAuthorById };
