@@ -9,4 +9,20 @@ async function getAllAuthors(req, res) {
   }
 }
 
-module.exports = { getAllAuthors };
+
+async function getAuthorById(req, res) {
+  try {
+    const { id } = req.params;
+    const author = await authorsService.getAuthorById(id);
+
+    if (!author) {
+      return res.status(404).json({ error: 'Author no encontrado' });
+    }
+
+    res.json(author);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { getAllAuthors, getAuthorById };

@@ -3,5 +3,6 @@ const router = express.Router();
 const authorsController = require('../controllers/authors.controller');
 
 router.get('/', authorsController.getAllAuthors);
+router.get('/:id', authorsController.getAuthorById);
 
 module.exports = router;
