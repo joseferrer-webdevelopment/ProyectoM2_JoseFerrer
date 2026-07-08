@@ -25,4 +25,14 @@ async function getAuthorById(req, res) {
   }
 }
 
-module.exports = { getAllAuthors, getAuthorById };
+async function createAuthor(req, res) {
+  try {
+    const { name, email, bio } = req.body;
+    const newAuthor = await authorsService.createAuthor(name, email, bio);
+    res.status(201).json(newAuthor);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { getAllAuthors, getAuthorById, createAuthor };
