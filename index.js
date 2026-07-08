@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const pool = require('./db');
+const authorsRoutes = require('./routes/authors.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,8 @@ app.get('/test-db', async (req, res) => {
     res.status(500).json({ conectado: false, error: error.message });
   }
 });
+
+app.use('/authors', authorsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
