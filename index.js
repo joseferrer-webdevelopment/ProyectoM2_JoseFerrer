@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const pool = require('./db');
 const authorsRoutes = require('./routes/authors.routes');
+const postsRoutes = require('./routes/posts.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +23,8 @@ app.get('/test-db', async (req, res) => {
 });
 
 app.use('/authors', authorsRoutes);
+
+app.use('/posts', postsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
