@@ -60,12 +60,28 @@ async function updatePosts(req, res) {
     const { title, content, published} = req.body
 
     const updatePosts = await postsService.updatePosts ( id, title, content, published);
-    
+
     res.status(200).json(updatePosts);
   } catch (error) {
     res.status(500).json({ error: error.message});
   }
 }
 
+async function deletePostById(req, res) {
+  try {
+    const {id} = req.params;
+    const post = await postsService.deletePostById(id);
 
-module.exports = {getAllPosts, getAllPostsById, getPostsByAuthorId, createPost, updatePosts}
+    if (!post) {
+        return res.status(404).json({ error: 'Post no encontrado'});
+    }
+
+    res.json(post);
+
+  } catch (error) {
+    res.status(500).json({ erorr: error.message });
+  }
+}
+
+
+module.exports = {getAllPosts, getAllPostsById, getPostsByAuthorId, createPost, updatePosts, deletePostById}
