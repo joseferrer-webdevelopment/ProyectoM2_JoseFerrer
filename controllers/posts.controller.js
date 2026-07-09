@@ -15,7 +15,7 @@ async function getAllPostsById(req, res) {
     const post = await postsService.getAllPostsById(id);
 
     if (!post) {
-        return res.status(404).json({ error: 'Posts no encontrado'});
+        return res.status(404).json({ error: 'Post no encontrado'});
     }
 
     res.json(post);
@@ -25,4 +25,17 @@ async function getAllPostsById(req, res) {
   }
 }
 
-module.exports = {getAllPosts, getAllPostsById}
+async function getPostsByAuthorId( req, res) {
+  try {
+    const { authorId } = req.params;
+    const posts = await postsService.getPostsByAuthorId(authorId);
+
+    res.json(posts)
+
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
+
+
+module.exports = {getAllPosts, getAllPostsById, getPostsByAuthorId}
