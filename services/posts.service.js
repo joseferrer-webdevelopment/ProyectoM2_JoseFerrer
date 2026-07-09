@@ -23,10 +23,24 @@ async function getPostsByAuthorId(authorId) {
 
 async function createPost(authorId, title, content, published) {
   const result = await pool.query(
-    'INSERT INTO posts (author_id, title, content, published) VALUES ($1, $2, $3, $4) RETURNING *',
-    [authorId, title, content, published]
+    "INSERT INTO posts (author_id, title, content, published) VALUES ($1, $2, $3, $4) RETURNING *",
+    [authorId, title, content, published],
   );
   return result.rows[0];
 }
 
-module.exports = { getAllPosts, getAllPostsById, getPostsByAuthorId, createPost };
+async function updatePosts(id, title, content, published) {
+  const result = await pool.query(
+    "UPDATE posts SET title = $1, content = $2, published = $3 WHERE id = $4 RETURNING *",
+    [title, content, published, id],
+  );
+  return result.rows[0];
+}
+
+module.exports = {
+  getAllPosts,
+  getAllPostsById,
+  getPostsByAuthorId,
+  createPost,
+  updatePosts
+};

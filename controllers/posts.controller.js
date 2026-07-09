@@ -54,5 +54,18 @@ async function createPost(req, res) {
   }
 } 
 
+async function updatePosts(req, res) {
+  try {
+    const { id } = req.params
+    const { title, content, published} = req.body
 
-module.exports = {getAllPosts, getAllPostsById, getPostsByAuthorId, createPost}
+    const updatePosts = await postsService.updatePosts ( id, title, content, published);
+    
+    res.status(200).json(updatePosts);
+  } catch (error) {
+    res.status(500).json({ error: error.message});
+  }
+}
+
+
+module.exports = {getAllPosts, getAllPostsById, getPostsByAuthorId, createPost, updatePosts}
