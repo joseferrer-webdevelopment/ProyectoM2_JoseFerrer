@@ -1,4 +1,5 @@
 const postsService = require("../services/posts.service");
+const authorsService = require('../services/authors.service');
 
 async function getAllPosts(req, res) {
   try {
@@ -37,5 +38,21 @@ async function getPostsByAuthorId( req, res) {
   }
 }
 
+async function createPost(req, res) {
+  try {
+    const { authorId, title, content, published } = req.body;
 
-module.exports = {getAllPosts, getAllPostsById, getPostsByAuthorId}
+    const authorExists = await authorsService.getAuthorById(authorId);
+    if (!authorExists) {
+      return res.status(404).json({ error: 'El author especificado no existe' });
+    }
+
+    const newPost = await postsService.createPost(authorId, title, content, published);
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+} 
+
+
+module.exports = {getAllPosts, getAllPostsById, getPostsByAuthorId, createPost}

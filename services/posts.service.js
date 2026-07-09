@@ -21,4 +21,12 @@ async function getPostsByAuthorId(authorId) {
   return result.rows;
 }
 
-module.exports = { getAllPosts, getAllPostsById, getPostsByAuthorId };
+async function createPost(authorId, title, content, published) {
+  const result = await pool.query(
+    'INSERT INTO posts (author_id, title, content, published) VALUES ($1, $2, $3, $4) RETURNING *',
+    [authorId, title, content, published]
+  );
+  return result.rows[0];
+}
+
+module.exports = { getAllPosts, getAllPostsById, getPostsByAuthorId, createPost };
