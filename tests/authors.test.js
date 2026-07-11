@@ -28,6 +28,22 @@ describe("GET /authors/:id", () => {
   });
 });
 
+describe('POST /authors', () => {
+  it('debería crear un author nuevo con status 201', async () => {
+    const nuevoAuthor = {
+      name: 'Test Author',
+      email: `test${Date.now()}@miniblog.com`,
+      bio: 'Un author creado desde un test automatizado'
+    };
+
+    const response = await request(app).post('/authors').send(nuevoAuthor);
+
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.name).toBe(nuevoAuthor.name);
+  });
+});
+
 afterAll(async () => {
   await pool.end();
 });
