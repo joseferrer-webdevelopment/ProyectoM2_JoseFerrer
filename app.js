@@ -3,6 +3,9 @@ const express = require('express');
 const pool = require('./db');
 const authorsRoutes = require('./routes/authors.routes');
 const postsRoutes = require('./routes/posts.routes');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./openapi.yaml');
 
 const app = express();
 
@@ -23,5 +26,7 @@ app.get('/test-db', async (req, res) => {
 
 app.use('/authors', authorsRoutes);
 app.use('/posts', postsRoutes);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 module.exports = app;
