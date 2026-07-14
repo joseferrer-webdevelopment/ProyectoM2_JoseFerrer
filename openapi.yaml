@@ -147,11 +147,11 @@ paths:
               type: object
               properties:
                 name:
-                  type: string
+                  type: Blanca Sanchez
                 email:
-                  type: string
+                  type: blank@miniblog.com
                 bio:
-                  type: string
+                  type: Prueba de actualizacion de datos para autores
       responses:
         '200':
           description: Author actualizado exitosamente
@@ -287,9 +287,9 @@ paths:
               type: object
               properties:
                 title:
-                  type: string
+                  type: Prueba de actualizacion para post
                 content:
-                  type: string
+                  type: Put te permite actualizar pero solo si el authorId existe
                 published:
                   type: boolean
       responses:
