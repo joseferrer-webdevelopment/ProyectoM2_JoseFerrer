@@ -63,14 +63,14 @@ paths:
       summary: Listar todos los authors
       tags: [Authors]
       responses:
-        '200':
+        "200":
           description: Lista de authors obtenida exitosamente
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Author'
+                  $ref: "#/components/schemas/Author"
     post:
       summary: Crear un author nuevo
       tags: [Authors]
@@ -92,18 +92,18 @@ paths:
                   type: string
                   example: Periodista especializada en tecnología
       responses:
-        '201':
+        "201":
           description: Author creado exitosamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Author'
-        '500':
+                $ref: "#/components/schemas/Author"
+        "500":
           description: Error del servidor (ej. email duplicado)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /authors/{id}:
     get:
@@ -117,18 +117,18 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Author encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Author'
-        '404':
+                $ref: "#/components/schemas/Author"
+        "404":
           description: Author no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     put:
       summary: Actualizar un author existente
       tags: [Authors]
@@ -147,24 +147,28 @@ paths:
               type: object
               properties:
                 name:
-                  type: Blanca Sanchez
+                  type: string
                 email:
-                  type: blank@miniblog.com
+                  type: string
                 bio:
-                  type: Prueba de actualizacion de datos para autores
+                  type: string
+              example:
+                name: blanca Sanchez
+                email: blnk@miniblog.com
+                bio: Autora de blogs
       responses:
-        '200':
+        "200":
           description: Author actualizado exitosamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Author'
-        '500':
+                $ref: "#/components/schemas/Author"
+        "500":
           description: Error del servidor
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     delete:
       summary: Eliminar un author (borra en cascada sus posts)
       tags: [Authors]
@@ -176,32 +180,32 @@ paths:
             type: integer
           example: 2
       responses:
-        '200':
+        "200":
           description: Author eliminado exitosamente, se devuelve el registro borrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Author'
-        '404':
+                $ref: "#/components/schemas/Author"
+        "404":
           description: Author no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /posts:
     get:
       summary: Listar todos los posts
       tags: [Posts]
       responses:
-        '200':
+        "200":
           description: Lista de posts obtenida exitosamente
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Post'
+                  $ref: "#/components/schemas/Post"
     post:
       summary: Crear un post nuevo (valida que el author exista)
       tags: [Posts]
@@ -226,24 +230,24 @@ paths:
                   type: boolean
                   example: true
       responses:
-        '201':
+        "201":
           description: Post creado exitosamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
-        '404':
+                $ref: "#/components/schemas/Post"
+        "404":
           description: El author especificado no existe
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '500':
+                $ref: "#/components/schemas/Error"
+        "500":
           description: Error del servidor
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /posts/{id}:
     get:
@@ -257,18 +261,18 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Post encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
-        '404':
+                $ref: "#/components/schemas/Post"
+        "404":
           description: Post no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     put:
       summary: Actualizar un post existente
       tags: [Posts]
@@ -287,24 +291,28 @@ paths:
               type: object
               properties:
                 title:
-                  type: Prueba de actualizacion para post
+                  type: string
                 content:
-                  type: Put te permite actualizar pero solo si el authorId existe
+                  type: string
                 published:
                   type: boolean
+              example:
+                title: Este es un post de actualizacion
+                content: Contenido del post de actualizacion
+                type: true
       responses:
-        '200':
+        "200":
           description: Post actualizado exitosamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
-        '500':
+                $ref: "#/components/schemas/Post"
+        "500":
           description: Error del servidor
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
     delete:
       summary: Eliminar un post
       tags: [Posts]
@@ -316,18 +324,18 @@ paths:
             type: integer
           example: 3
       responses:
-        '200':
+        "200":
           description: Post eliminado exitosamente, se devuelve el registro borrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
-        '404':
+                $ref: "#/components/schemas/Post"
+        "404":
           description: Post no encontrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
 
   /posts/author/{authorId}:
     get:
@@ -341,7 +349,7 @@ paths:
             type: integer
           example: 1
       responses:
-        '200':
+        "200":
           description: Lista de posts del author (puede ser un array vacío si no tiene posts)
           content:
             application/json:
@@ -349,7 +357,7 @@ paths:
                 type: array
                 items:
                   allOf:
-                    - $ref: '#/components/schemas/Post'
+                    - $ref: "#/components/schemas/Post"
                     - type: object
                       properties:
                         author_name:
