@@ -299,7 +299,7 @@ paths:
               example:
                 title: Este es un post de actualizacion
                 content: Contenido del post de actualizacion
-                type: true
+                published: true
       responses:
         "200":
           description: Post actualizado exitosamente
