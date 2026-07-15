@@ -50,12 +50,61 @@ components:
           type: string
           format: date-time
 
-    Error:
+    Error400:
       type: object
       properties:
         error:
           type: string
-          example: Author no encontrado
+          example: email debe tener un formato válido
+
+    Error404:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Autor no encontrado intenta con otro autor
+
+    Error409:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Ya existe un author con ese email
+
+    Error500:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Error interno del servidor
+
+    Error400post:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Datos inválidos; authorId, title y content son obligatorios
+
+    Error404post:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Post no encontrado
+
+    Error409post:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Ya existe un author con ese email
+
+    Error500post:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Error interno del servidor
 
 paths:
   /authors:
@@ -98,12 +147,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Author"
-        "500":
-          description: Error del servidor (ej. email duplicado)
+        "400":
+          description: Datos inválidos; name y email son obligatorios y el email debe tener un formato válido
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error400"
+        "409":
+          description: Ya existe un author con ese email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error409"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error500"
 
   /authors/{id}:
     get:
@@ -128,7 +189,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error404"
     put:
       summary: Actualizar un author existente
       tags: [Authors]
@@ -145,6 +206,7 @@ paths:
           application/json:
             schema:
               type: object
+              required: [name, email]
               properties:
                 name:
                   type: string
@@ -163,12 +225,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Author"
-        "500":
-          description: Error del servidor
+        "400":
+          description: Datos inválidos; name y email son obligatorios y el email debe tener un formato válido
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error400"
+        "404":
+          description: Author no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404"
+        "409":
+          description: Ya existe un author con ese email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error409"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error500"
     delete:
       summary: Eliminar un author (borra en cascada sus posts)
       tags: [Authors]
@@ -191,7 +271,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error404"
 
   /posts:
     get:
@@ -236,18 +316,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Post"
+        "400":
+          description: Datos inválidos; authorId, title y content son obligatorios
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error400post"
         "404":
           description: El author especificado no existe
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error404"
         "500":
           description: Error del servidor
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error500"
 
   /posts/{id}:
     get:
@@ -272,7 +358,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error404post"
     put:
       summary: Actualizar un post existente
       tags: [Posts]
@@ -289,6 +375,7 @@ paths:
           application/json:
             schema:
               type: object
+              required: [title, content, published]
               properties:
                 title:
                   type: string
@@ -307,12 +394,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Post"
-        "500":
-          description: Error del servidor
+        "400":
+          description: Datos inválidos; title, content y published son obligatorios
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error400"
+        "404":
+          description: Post no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error404post"
+        "500":
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error500"
     delete:
       summary: Eliminar un post
       tags: [Posts]
@@ -335,7 +434,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error404post"
 
   /posts/author/{authorId}:
     get:
