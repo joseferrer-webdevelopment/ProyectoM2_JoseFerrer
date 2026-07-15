@@ -93,11 +93,12 @@ El servidor queda disponible en `http://localhost:3000`.
 npm test
 ```
 
-Corre la suite de Jest + Supertest, que cubre:
-- `GET /authors` — status 200 y estructura de array
-- `GET /authors/:id` — caso exitoso y caso 404
-- `POST /authors` — creación exitosa con status 201
-- `POST /posts` — creación exitosa con status 201
+Corre la suite de Jest + Supertest, incluyendo:
+
+- Endpoints de authors
+- Endpoints de posts
+- Validaciones de middlewares
+- Manejo de errores
 
 Los tests usan la base de datos configurada en `.env`, y cierran el pool de conexión automáticamente al finalizar (`afterAll`).
 
@@ -139,6 +140,15 @@ Ahí se puede ver cada endpoint documentado (parámetros, body esperado, respues
 | POST | `/posts` | Crear un post (valida que el author exista) |
 | PUT | `/posts/:id` | Actualizar un post |
 | DELETE | `/posts/:id` | Eliminar un post |
+
+## Middlewares implementados
+
+La API utiliza middlewares para centralizar la validación y el manejo de errores.
+
+- **validateAuthor** — valida los datos enviados al crear o actualizar authors.
+- **validatePost** — valida los datos enviados al crear o actualizar posts.
+- **validateParams** — verifica que los parámetros enviados por URL sean válidos.
+- **errorHandler** — centraliza el manejo de errores y devuelve respuestas HTTP consistentes.
 
 ## Guía de deployment en Railway
 
