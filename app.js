@@ -5,6 +5,7 @@ const authorsRoutes = require('./routes/authors.routes');
 const postsRoutes = require('./routes/posts.routes');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
+const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
 const swaggerDocument = YAML.load('./openapi.yaml');
 
 // Se sobrescribe dinámicamente la URL del servidor en Swagger según el entorno:
@@ -38,5 +39,8 @@ app.use('/authors', authorsRoutes);
 app.use('/posts', postsRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 module.exports = app;

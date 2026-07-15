@@ -1,48 +1,43 @@
-const postsService = require("../services/posts.service");
+const postsService = require('../services/posts.service');
 const authorsService = require('../services/authors.service');
 
-async function getAllPosts(req, res) {
+async function getAllPosts(req, res, next) {
   try {
     const posts = await postsService.getAllPosts();
     res.json(posts);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 }
 
-async function getAllPostsById(req, res) {
+async function getAllPostsById(req, res, next) {
   try {
-    const { id } = req.params;
-    const post = await postsService.getAllPostsById(id);
+    const post = await postsService.getAllPostsById(req.params.id);
 
     if (!post) {
-        return res.status(404).json({ error: 'Post no encontrado'});
+      return res.status(404).json({ error: 'Post no encontrado' });
     }
 
     res.json(post);
-
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 }
 
-async function getPostsByAuthorId( req, res) {
+async function getPostsByAuthorId(req, res, next) {
   try {
-    const { authorId } = req.params;
-    const posts = await postsService.getPostsByAuthorId(authorId);
-
-    res.json(posts)
-
+    const posts = await postsService.getPostsByAuthorId(req.params.authorId);
+    res.json(posts);
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    next(error);
   }
 }
 
-async function createPost(req, res) {
+async function createPost(req, res, next) {
   try {
     const { authorId, title, content, published } = req.body;
-
     const authorExists = await authorsService.getAuthorById(authorId);
+
     if (!authorExists) {
       return res.status(404).json({ error: 'El author especificado no existe' });
     }
@@ -50,38 +45,44 @@ async function createPost(req, res) {
     const newPost = await postsService.createPost(authorId, title, content, published);
     res.status(201).json(newPost);
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-} 
-
-async function updatePosts(req, res) {
-  try {
-    const { id } = req.params
-    const { title, content, published} = req.body
-
-    const updatePosts = await postsService.updatePosts ( id, title, content, published);
-
-    res.status(200).json(updatePosts);
-  } catch (error) {
-    res.status(500).json({ error: error.message});
+    next(error);
   }
 }
 
-async function deletePostById(req, res) {
+async function updatePosts(req, res, next) {
   try {
-    const {id} = req.params;
-    const post = await postsService.deletePostById(id);
+    const { title, content, published } = req.body;
+    const updatedPost = await postsService.updatePosts(req.params.id, title, content, published);
+
+    if (!updatedPost) {
+      return res.status(404).json({ error: 'Post no encontrado' });
+    }
+
+    res.json(updatedPost);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deletePostById(req, res, next) {
+  try {
+    const post = await postsService.deletePostById(req.params.id);
 
     if (!post) {
-        return res.status(404).json({ error: 'Post no encontrado'});
+      return res.status(404).json({ error: 'Post no encontrado' });
     }
 
     res.json(post);
-
   } catch (error) {
-    res.status(500).json({ erorr: error.message });
+    next(error);
   }
 }
 
-
-module.exports = {getAllPosts, getAllPostsById, getPostsByAuthorId, createPost, updatePosts, deletePostById}
+module.exports = {
+  getAllPosts,
+  getAllPostsById,
+  getPostsByAuthorId,
+  createPost,
+  updatePosts,
+  deletePostById
+};

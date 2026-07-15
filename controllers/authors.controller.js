@@ -1,19 +1,17 @@
 const authorsService = require('../services/authors.service');
 
-async function getAllAuthors(req, res) {
+async function getAllAuthors(req, res, next) {
   try {
     const authors = await authorsService.getAllAuthors();
     res.json(authors);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 }
 
-
-async function getAuthorById(req, res) {
+async function getAuthorById(req, res, next) {
   try {
-    const { id } = req.params;
-    const author = await authorsService.getAuthorById(id);
+    const author = await authorsService.getAuthorById(req.params.id);
 
     if (!author) {
       return res.status(404).json({ error: 'Author no encontrado' });
@@ -21,35 +19,38 @@ async function getAuthorById(req, res) {
 
     res.json(author);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 }
 
-async function createAuthor(req, res) {
+async function createAuthor(req, res, next) {
   try {
     const { name, email, bio } = req.body;
     const newAuthor = await authorsService.createAuthor(name, email, bio);
     res.status(201).json(newAuthor);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 }
 
-async function updateAuthor(req, res) {
+async function updateAuthor(req, res, next) {
   try {
-    const { id } = req.params
-    const { name, email, bio } = req.body
-    const updateAuthor = await authorsService.updateAuthor (id, name, email, bio);
-    res.status(200).json(updateAuthor);
+    const { name, email, bio } = req.body;
+    const updatedAuthor = await authorsService.updateAuthor(req.params.id, name, email, bio);
+
+    if (!updatedAuthor) {
+      return res.status(404).json({ error: 'Author no encontrado' });
+    }
+
+    res.json(updatedAuthor);
   } catch (error) {
-    res.status(500).json({error: error.message});
+    next(error);
   }
 }
 
-async function deleteAuthorById(req, res) {
+async function deleteAuthorById(req, res, next) {
   try {
-    const { id } = req.params;
-    const author = await authorsService.deleteAuthorById(id);
+    const author = await authorsService.deleteAuthorById(req.params.id);
 
     if (!author) {
       return res.status(404).json({ error: 'Author no encontrado' });
@@ -57,9 +58,8 @@ async function deleteAuthorById(req, res) {
 
     res.json(author);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 }
-
 
 module.exports = { getAllAuthors, getAuthorById, createAuthor, updateAuthor, deleteAuthorById };
