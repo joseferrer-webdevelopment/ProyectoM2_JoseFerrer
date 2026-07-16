@@ -2,9 +2,15 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validateAuthor(req, res, next) {
   const { name, email, bio } = req.body;
+  const soloLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/;
 
   if (typeof name !== 'string' || !name.trim()) {
     return res.status(400).json({ error: 'name es obligatorio y no puede estar vacío' });
+  }
+
+  if (!soloLetras.test(name)) { 
+    return res.status(400).json({ error: 'El nombre solo puede contener letras y espacios' });
+
   }
 
   if (typeof email !== 'string' || !email.trim()) {
