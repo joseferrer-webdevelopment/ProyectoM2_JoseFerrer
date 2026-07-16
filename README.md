@@ -143,12 +143,58 @@ Ahí se puede ver cada endpoint documentado (parámetros, body esperado, respues
 
 ## Middlewares implementados
 
-La API utiliza middlewares para centralizar la validación y el manejo de errores.
+La API utiliza middlewares para centralizar la validación de datos de entrada y el manejo de errores, evitando repetir esta lógica en cada controller.
 
-- **validateAuthor** — valida los datos enviados al crear o actualizar authors.
-- **validatePost** — valida los datos enviados al crear o actualizar posts.
-- **validateParams** — verifica que los parámetros enviados por URL sean válidos.
-- **errorHandler** — centraliza el manejo de errores y devuelve respuestas HTTP consistentes.
+### `validateAuthor`
+
+Valida los datos enviados al crear o actualizar un author (`POST /authors`, `PUT /authors/:id`):
+
+- `name` es obligatorio, no puede estar vacío, y solo puede contener letras y espacios (incluye tildes y ñ).
+- `email` es obligatorio, no puede estar vacío, y debe tener un formato válido (`usuario@dominio.com`). Se normaliza automáticamente a minúsculas y sin espacios extremos antes de guardarse.
+- `bio` es opcional, pero si se envía, debe ser de tipo texto.
+
+Ejemplos de error (status `400`):
+```json
+{ "error": "name es obligatorio y no puede estar vacío" }
+{ "error": "El nombre solo puede contener letras y espacios" }
+{ "error": "email debe tener un formato válido" }
+```
+
+### `validatePost`
+
+Valida los datos enviados al crear o actualizar un post (`POST /posts`, `PUT /posts/:id`):
+
+- `title` y `content` son obligatorios en ambos casos, y no pueden estar vacíos.
+- `authorId` es obligatorio y debe ser un entero positivo **solo al crear** (`POST`); no se exige ni se modifica al actualizar (`PUT`), ya que el post no cambia de dueño.
+- `published` debe ser booleano si se envía; al actualizar (`PUT`) es obligatorio que sea booleano, al crear (`POST`) es opcional (por defecto `false` si no se envía).
+
+Ejemplos de error (status `400`):
+```json
+{ "error": "authorId debe ser un número entero positivo" }
+{ "error": "title es obligatorio y no puede estar vacío" }
+{ "error": "content es obligatorio y no puede estar vacío" }
+{ "error": "published debe ser booleano" }
+```
+
+### `validateParams`
+
+Verifica que los parámetros recibidos por la URL (`:id` en authors/posts, `:authorId` en `/posts/author/:authorId`) sean números enteros positivos antes de que la petición llegue al controller, evitando consultas innecesarias a la base de datos con valores inválidos.
+
+Ejemplo de error (status `400`):
+```json
+{ "error": "id debe ser un número entero positivo" }
+```
+
+### `errorHandler` y `notFoundHandler`
+
+- **`errorHandler`** — middleware de error centralizado (4 argumentos `error, req, res, next`) que traduce errores reales de PostgreSQL a respuestas HTTP consistentes:
+  - Código `23505` (violación de restricción única, ej. email duplicado) → `409 Conflict`: `{ "error": "Ya existe un registro con esos datos únicos" }`
+  - Código `22P02` (tipo de dato inválido) o body malformado → `400 Bad Request`: `{ "error": "La solicitud contiene datos inválidos" }`
+  - Cualquier otro error no controlado → `500 Internal Server Error`: `{ "error": "Error interno del servidor" }`
+- **`notFoundHandler`** — responde `404` con `{ "error": "Ruta no encontrada" }` para cualquier ruta que no exista en la API.
+
+Los controllers no manejan el status `500` directamente: delegan los errores con `next(error)`, y es `errorHandler` quien decide la respuesta final según el tipo de error recibido.
+
 
 ## Guía de deployment en Railway
 
